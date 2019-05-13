@@ -1,6 +1,7 @@
-from Crypto.Cipher import AES
+from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Random import get_random_bytes
 from Crypto.Hash   import SHA256
+from Crypto.PublicKey import RSA
 import binascii
 import base64
 
@@ -129,10 +130,85 @@ class CryptoTools:
         self.mode = AES.MODE_CBC
         plaintext = self.cipher.decrypt(ciphertext)
         return unpad(plaintext)
+    '''
+    RSA Encrypt, Encypts an arbitrary amount of data
+    TODO:Integrate with pycryptodome
+    @key is the key for encryption
+    @plaintext is the plaintext data to be encrypted
+    '''
+    def RSAEncrypt(self, key, plaintext):
+        chunkarray = []
+        ciphertext = ''
+        padding = 11 #PKCS1_OAEP padding length
+        start = 0
+        maxChunk = ((key.size_in_bits()/8 )- 2 - (32*2))
+        self.cipher = PKCS1_OAEP.new(key)
+        endpoint = len(plaintext)
 
+        while start < endpoint:
+            if len(plaintext) > (key.size_in_bits()/8 - padding):
+                #split the ciphertext into chunks
+                chunkEnd = start + maxChunk
+                if chunkEnd > endpoint:
+                    chunkEnd = endpoint
+                chunk = plaintext[start:chunkEnd]
+                print 'DEBUG: length of chunk: ' + str(len(chunk))
+                start = chunkEnd
+                ciphertext += self.cipher.encrypt(chunk)
+            else:
+                chunk = plaintext
+                ciphertext += self.cipher.encrypt(chunk)
+                break
+
+
+        return ciphertext
+
+    '''
+    RSA Encrypt, Encypts an arbitrary amount of data
+    TODO:Integrate with pycryptodome
+    @key is the key for encryption
+    @ciphertext is the plaintext data to be encrypted
+    '''
+
+    def RSADecrypt(self, key, cipherText):
+        chunkarray = []
+        plaintext = ''
+        padding = 11 #PKCS1_OAEP padding length
+        start = 0
+        maxChunk = key.size_in_bits()/8
+        endpoint = len(cipherText)
+        self.cipher = PKCS1_OAEP.new(key)
+
+        try:
+            while start < (endpoint):
+                chunkEnd = start + maxChunk
+                if(endpoint - start) <= (key.size_in_bits()/8):
+                    chunkEnd = endpoint
+                    chunk = cipherText[start:chunkEnd]
+                    plaintext += self.cipher.decrypt(chunk)
+                    break
+
+                if chunkEnd > endpoint:
+                    chunkEnd = endpoint
+                    chunk = cipherText[start:chunkEnd]
+                else:
+                    chunk = cipherText[start:chunkEnd]
+                    print me + 'DEBUG> length of start: ' + str(start)
+
+                start = chunkEnd
+                plaintext += self.cipher.decrypt(chunk)
+            return plaintext
+
+        except OSError as e:
+            print me + 'ERROR: ' + str(e)
+
+
+    def RSAGenerateKey(self, keyLength):
+        return RSA.generate(keyLength)
 
 '''
-just test AES EAX encryption/decryption as well as random256 bit key
+Testing AES EAX, AESCBC encryption/decryption, RSA encrypt/decryption
+as well as random256 bit key
 '''
 if __name__ == '__main__':
     crypt = CryptoTools()
@@ -159,3 +235,17 @@ if __name__ == '__main__':
     print me + 'INFO> Length of cipher: ' + str(len(ciphertext1))
     decrypted = crypt.AesCbcDecrypt(derivedkey, crypt.salt, ciphertext1)
     print me + 'INFO> AES-CBC Decrypt ' + str(decrypted)
+
+    RSAKey = crypt.RSAGenerateKey(4096)
+    privateKey = RSA.importKey(RSAKey.exportKey())
+    plaintext = b'hello from the RSA world of messaging'
+    ciphertext = crypt.RSAEncrypt(RSAKey.publickey(), plaintext)
+    print me + 'CIPHERTEXT: ' + str(ciphertext)
+    decrypted = crypt.RSADecrypt(privateKey, ciphertext)
+    print me + 'PLAINTEXT: ' + str(decrypted)
+    print '#####TESTING PACKETS OVER PADDING######'
+    plaintext = b'hello from the RSA world of messaging'*300
+    ciphertext = crypt.RSAEncrypt(RSAKey.publickey(), plaintext)
+    print me + 'CIPHERTEXT: ' + str(ciphertext)
+    decrypted = crypt.RSADecrypt(privateKey, ciphertext)
+    print me + 'PLAINTEXT: ' + str(decrypted)
