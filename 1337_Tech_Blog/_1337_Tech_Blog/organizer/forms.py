@@ -1,6 +1,12 @@
+'''
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
+Proof of Concept code, No liabilities or warranties expressed or implied.
+'''
+
+
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import NewsLink, Startup, Tag, Tasking
+from .models import NewsLink, Startup, Tag, Tasking, Librarian
 from datetime import datetime
 
 class NewsLinkForm(forms.ModelForm):
@@ -37,47 +43,33 @@ class TagForm(SlugCleanMixin, forms.Form):
 
     def clean_name(self):
         return self.cleaned_data['name'].lower()
-'''
+
 class TaskingForm(SlugCleanMixin, forms.ModelForm):
-    name = forms.CharField(max_length=32)
-    slug = forms.SlugField(max_length=32, help_text='A label for URL config')
-    asignee = forms.CharField(max_length=16, help_text='who is creating the task?')
-    project_codename = forms.CharField(max_length=32, help_text='project name (codename)')
-    description = forms.Textarea()
-    assigned_date = forms.DateTimeField(initial=datetime.now())#make into an automatically generated field and read-only
+
+    #name = forms.CharField(max_length=32)
+    #slug = forms.SlugField(max_length=32, help_text='A label for URL config')
+    #asignee = forms.CharField(max_length=16, help_text='who is creating the task?')
+    #project_codename = forms.CharField(max_length=32, help_text='project name (codename)')
+    #description = forms.Textarea()
+    #assigned_date = forms.DateTimeField(initial=datetime.now())#make into an automatically generated field and read-only
 
     class Meta:
         model = Tasking
         fields = '__all__'
 
-    def save(self):
-        new_task = Tasking.objects.create(name=self.cleaned_data['name'],
-                                          slug=self.cleaned_data['slug'],
-                                          asignee=self.cleaned_data['asignee'],
-                                          project_codename=self.cleaned_data['project_codename'],
-                                          description=self.cleaned_data['description'],
-                                          assigned_date=self.cleaned_data['assigned_date'])
-        return new_task
+    #def save(self):
+    #    new_task = Tasking.objects.create(name=self.cleaned_data['name'],
+    #                                      slug=self.cleaned_data['slug'],
+    #                                      asignee=self.cleaned_data['asignee'],
+    #                                      project_codename=self.cleaned_data['project_codename'],
+    #                                      description=self.cleaned_data['description'],
+    #                                      assigned_date=self.cleaned_data['assigned_date'])
+    #    return new_task
 
     def clean_name(self):
         return self.cleaned_data['name'].lower()
 
-'''
-
-
-class TaskingForm(SlugCleanMixin, forms.ModelForm):
-
-
-    class Meta:
-        model = Tasking
-        fields = '__all__'
-
-    def clean_name(self):
-        return self.cleaned_data['name'].lower()
-
-        
-
-class UploadFileForm(forms.Form):
+class UploadFileForm(SlugCleanMixin,forms.Form):
     title = forms.CharField(max_length=32)
     file = forms.FileField()
     file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
