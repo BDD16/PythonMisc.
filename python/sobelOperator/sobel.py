@@ -1,5 +1,6 @@
+from typing import List
+
 from PIL import Image
-import math
 import numpy
 from numpy import asarray
 
@@ -9,8 +10,8 @@ count = 0
 
 class Sobel:
 
-    def __init__(self, filename, Threshold, Gx=[[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]],
-                 Gy=[[-1, -2, -1], [0, 0, 0], [1, 2, 1]]):
+    def __init__(self, filename, Threshold, Gx: List = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]],
+                 Gy: List = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]):
         self.filename = filename
         self.threshold = Threshold
         self.Gx = Gx
@@ -27,7 +28,7 @@ class Sobel:
         self.NormI = Image.new(self.img.mode, (self.rows, self.columns))
         self.sobel()
 
-    def sobel(self):
+    def sobel(self) -> Image:
         mag = []
         maxScalar = 0
         for i in range(self.rows - 2):
@@ -67,6 +68,8 @@ class Sobel:
         count += 1
         self.NormI.save('Normalized_Gradient_' + str(count) + self.filename)
         print(me + 'INFO>Successfully Edge Detected with Sobel')
+
+        return self.NormI
 
 
 if __name__ == '__main__':
