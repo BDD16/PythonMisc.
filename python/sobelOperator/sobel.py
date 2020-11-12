@@ -33,11 +33,11 @@ class Sobel:
         maxScalar = 0
         for i in range(self.rows - 2):
             for j in range(self.columns - 2):
-                S1 = self.Gx.dot(self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 0] + \
-                                 self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 1] + \
+                S1 = self.Gx.dot(self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 0] +
+                                 self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 1] +
                                  self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 2]) / 8
-                S2 = self.Gy.dot(self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 0] + \
-                                 self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 1] + \
+                S2 = self.Gy.dot(self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 0] +
+                                 self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 1] +
                                  self.processThis[i:i + len(self.Gx), j:j + len(self.Gy), 2]) / 8
 
                 mag_scalar = numpy.linalg.norm((numpy.sum(S1) ** 2) + (numpy.sum(S2) ** 2))
