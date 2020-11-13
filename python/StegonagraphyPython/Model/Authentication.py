@@ -29,18 +29,23 @@ class Authentication(ZeroKnowledgeServer, ZeroKnowledgeClient):
     pass
 
 
-class SecurePassword:
+class SecurePassword(str):
     """
     SecurePassword just contains a string with the ability to semi-securely delete from the RAM
     """
+
     def __init__(self, pwd_to_secure: str):
-        self.pwd = pwd_to_secure
+        super(SecurePassword, self)
+        self.pwd = pwd_to_secure.encode()
+        pwd_to_secure.replace(pwd_to_secure, "\x00")
+        self.pwd = bytearray(self.pwd)
 
     def delete(self) -> bool:
         result = False
         try:
-            for i in range(len(self.pwd)):
-                self.pwd[i] = "\x00".encode()
+
+            for i in range(0, len(self.pwd)):
+                self.pwd[i] = ord("\x00")
 
             del self.pwd
             result = True
@@ -50,3 +55,8 @@ class SecurePassword:
             result = False
 
         return result
+
+
+if __name__ == '__main__':
+    x = SecurePassword('isthissecure')
+    x.delete()
