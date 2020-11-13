@@ -37,8 +37,8 @@ class SecurePassword(str):
     def __init__(self, pwd_to_secure: str):
         super(SecurePassword, self)
         self.pwd = pwd_to_secure.encode()
-        pwd_to_secure.replace(pwd_to_secure, "\x00")
         self.pwd = bytearray(self.pwd)
+        del pwd_to_secure
 
     def delete(self) -> bool:
         result = False
@@ -46,7 +46,6 @@ class SecurePassword(str):
 
             for i in range(0, len(self.pwd)):
                 self.pwd[i] = ord("\x00")
-
             del self.pwd
             result = True
 
