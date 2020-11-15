@@ -48,7 +48,7 @@ class FileInterface():
             fd = open(self.fileName, 'rb')
         except OSError as err:
             if err > 0
-            print me + 'ERROR> Error will robinson, Error'
+            print(me + 'ERROR> Error will robinson, Error')
 
         data = fd.read()
         fd.close()
