@@ -26,12 +26,12 @@
 <section>
     <h3>Asignee</h3>
     <u1>
-      {% if perms.organizer.add_tag %}
+      {% if perms.organizer.add_tasking %}
         <li>
-          <a
-              href="{{ tag.get_update_url }}"
-              class="button">
-            Edit Tag</a></li>
+          <a href="{{ tasking.get_update_url }}" class="button">
+            Edit Tag
+            </a>
+          </li>
         {% endif %}
         <!-- list of posts related to tag -->
         <li><a href="{{ theMan}}">

@@ -1,0 +1,13 @@
+##Fix UI to be sleak and easy to use
+
+##Add in password protection of file
+
+##Add in ability to show how much space that a user can hide a file
+
+##Add in ability to use two least significant bytes? (2 right most bits)
+
+##Add in a better Optimize extraction algorithm with XOR'ing and bit masks?
+
+##Add in a feature to hide a key
+
+##Add in a feature to hide a .dem or .pem file

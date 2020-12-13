@@ -10,4 +10,13 @@
     {% include "organizer/upload_form.html" %}
   </div>
 </div>
+
+    <div class='progress-wrapper'>
+        <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    </div>
+    <div id="progress-bar-message">Waiting for progress to start...</div>
+{% endblock %}
+
+{% block scripts %}
+      <script src="{% url "task_status" task_id %}"></script>
 {% endblock %}

@@ -1,3 +1,8 @@
+'''
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
+Proof of Concept code, No liabilities or warranties expressed or implied.
+'''
+
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Random import get_random_bytes
 from Crypto.Hash import SHA256
@@ -80,10 +85,10 @@ class CryptoTools:
     '''
 
     def AesEncryptEAX(self, plaintext, key, mac_len=16):
-        self.cipher = AES.new(key, AES.MODE_EAX)
+        self.cipher = AES.new(key, AES.MODE_EAX, nonce=self.nonce)
         self.nonce = self.cipher.nonce
         self.mode = AES.MODE_EAX
-        ciphertext, self.tag = self.cipher.encrypt_and_digest(data)
+        ciphertext, self.tag = self.cipher.encrypt_and_digest(plaintext)
         # need to append self.tag to ciphertext in case an object doens't store that
         # tag anymore.
         # need to find out how many bytes the tag is for a 256 bit key A: mac_len=16bytes
@@ -99,11 +104,15 @@ class CryptoTools:
     '''
 
     def AesDecryptEAX(self, cipherdata, key):
+        print(b'AES-Decrypt:' + self.nonce)
         self.cipher = AES.new(key, AES.MODE_EAX, nonce=self.nonce)
+        self.nonce = self.cipher.nonce
         self.mode = AES.MODE_EAX
-        plaintext = self.cipher.decrypt(cipherdata[:-16])
+        plaintext = self.cipher.decrypt(cipherdata[:len(cipherdata) - 16])
+        # print("plaintext: " + str(plaintext))
         try:
-            self.cipher.verify(cipherdata[len(cipherdata) - 16:])
+            self.tag = cipherdata[len(cipherdata) - 16:]
+            self.cipher.verify(self.tag)
             return plaintext
         except ValueError:
             print(me + 'Key incorrect or message is corrupted')

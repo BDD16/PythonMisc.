@@ -3,13 +3,13 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
 Proof of Concept code, No liabilities or warranties expressed or implied.
 '''
 
-
 from django.shortcuts import get_object_or_404
 from django.shortcuts import (
     get_object_or_404, redirect, render)
 from django.http import (
     Http404, HttpResponseRedirect)
 from django.views.generic import View
+
 
 class RegisterMixin:
 
@@ -36,11 +36,11 @@ class RegisterMixin:
                 self.get_success_url())
 
     def form_valid(self, form):
-
         self.object = form.save(form)
         print(self.object)
         return HttpResponseRedirect(
             self.get_success_url())
+
 
 class CreateView(View):
     form_class = None
@@ -51,6 +51,7 @@ class CreateView(View):
             request,
             self.template_name,
             {'form': self.form_class()})
+
     '''
     def post(self, request):
         bound_form = self.form_class(request.POST)

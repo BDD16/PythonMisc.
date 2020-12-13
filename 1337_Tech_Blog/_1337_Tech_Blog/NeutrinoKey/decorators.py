@@ -1,12 +1,18 @@
+'''
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
+Proof of Concept code, No liabilities or warranties expressed or implied.
+'''
+
 from django.conf import settings
 from django.contrib.auth import get_user
 from django.shortcuts import redirect
 
+
 def custom_login_required(view):
-    #view argument must be a function
+    # view argument must be a function
 
     def new_view(request, *args, **kwargs):
-        #View argument must be a function
+        # View argument must be a function
         user = get_user(request)
         if user.is_authenticated():
             return view(request, *args, **kwargs)
@@ -16,7 +22,24 @@ def custom_login_required(view):
 
         return new_view
 
-    #TODO: ADDIN ZEROKNOWLEDGE AUTHENTICATION_WZK Implementation
-    #My Idea to make this authentication work is using an && between django's
-    #Built in authentication and my own ZKA_wzk implementation.  That way it
-    #would take both to fail catastrophically in order for a user to be compromised
+    # TODO: ADDIN ZEROKNOWLEDGE AUTHENTICATION_WZK Implementation
+    # My Idea to make this authentication work is using an && between django's
+    # Built in authentication and my own ZKA_wzk implementation.  That way it
+    # would take both to fail catastrophically in order for a user to be compromised
+
+
+class ZeroKnowledgeServer:
+
+    def __init__(self):
+        # TODO: Everything
+        # accept incoming data and figure out how to do some calculations in order to process
+        # this may not be trivial and refactoring may need to take place
+        # for example just because we have a custom client/server code we need to integrate to
+        # get it to work alongside django.
+
+        # What may be needed a front end client to calculate a, z, and use a csrf token.
+        # This may be a custom form that I need to make.
+        # This is going to overcomplicate the easy implementation of authentication but would be nice
+        # to prove that it can occur and be one of the first to publish online, as a personal goal.
+        ##########################################################################################
+        pass

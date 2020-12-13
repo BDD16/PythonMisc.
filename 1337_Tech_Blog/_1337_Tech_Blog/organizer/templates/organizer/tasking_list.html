@@ -1,4 +1,5 @@
 ﻿{% extends parent_template|default:"organizer/base.html" %}
+{% load static %}
 
 {% block title %}
 {{ block.super }}  - {{ tasking.name|title }}
@@ -9,17 +10,33 @@
 <h2> TaskingList<!-- name of tag --> </h2>
     <div>
         <!-- <a href="{% url 'organizer_tag_create' %}">Create a New Tag</a> -->
-        <a href="{% url 'organizer_tasking_create' %}">Create a new Task</a>
+        <a class="CreateLink" href="{% url 'organizer_tasking_create' %}">Create a new Task</a>
     </div>
         <ul>
+
+          <div class="row">
             <!-- list of startups related to tag-->
+            <!-- <div class="col-xs-12 shelf" style="column-fill:balancing;"></div> -->
             {% for tasking in tasking_list %}
-            <li><a href="{{ tasking.get_absolute_url }}">
-                {{ tasking.name|title}}
-            </a></li>
-            {% empty %}
-            <li><em>There are currently no Taskings availiable</em></li>
+
+                  {%if forloop.counter|divisibleby:4 %}
+                      <div class="col-xs-12 shelf" style="column-fill:balance;"></div>
+                  {% endif %}
+
+                    <a class="shelfurl" href="{{ tasking.get_absolute_url }}">
+                      <span  data-title="{{ tasking.name|title }}">
+                        <img  src="{% static 'img/NuclearAdjusted.png' %}"  width=100 height=150 class="img-responsive comicBook" alt=""/>
+                        <h2 class="comicBookTitle">{{tasking.name|title}}</h2>
+                      </span>
+                    </a>
+
+
+                {% empty %}
+                <li><em>There are currently no Taskings availiable</em></li>
             {% endfor %}
+            <div class="col-xs-12 shelf" style="column-fill:balance;"></div>
+          </div>
+        </div>
         </ul>
 
         {% if perms.organizer.add_tasking or perms.ogranizer.delete_tasking %}
@@ -28,7 +45,7 @@
             <li>
               <a
                   href="{{ tasking.get_update_url }}"
-                  class="button">
+                  class="button OrangeThing">
                 Edit Tag</a></li>
             {% endif %}
           </ul>

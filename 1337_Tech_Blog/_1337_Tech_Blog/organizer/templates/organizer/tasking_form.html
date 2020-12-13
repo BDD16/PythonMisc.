@@ -51,10 +51,17 @@
         <p>
             <label for="id_assigned_date">Assigned Date:</label>
             <input id="id_assigned_date" name="assigned_date" type="datetime-local" value="{% now 'Y-m-d h:i:s' %}" />
-            
+
             <span class="helptext">A label for URL config</span>
         </p>
-        <button type="submit"> Create Task </button>
+
+        <p>
+            <label for="id_is_complete">Is task Completed?</label>
+            <input id="id_is_complete" name="is_complete" type="checkbox" />
+
+            <span class="helptext">Check if the task is completed</span>
+        </p>
+        <button class="CreateButton" type="submit"> Create Task </button>
     </form>
 {% else %}
 <h2>YOU DON't have permissions</h2>

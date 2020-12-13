@@ -1,3 +1,8 @@
+"""
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
+Proof of Concept code, No liabilities or warranties expressed or implied.
+"""
+
 """FortressOfSolitude URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:

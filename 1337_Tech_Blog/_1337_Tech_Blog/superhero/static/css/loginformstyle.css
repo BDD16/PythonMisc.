@@ -7,7 +7,7 @@
 
 .SanAntone p {
   align-items: center;
-  color: #C25100;
+  color: #00F070;
   font-weight: bold;
   font-family: 'Oswald', sans-serif;
 }
@@ -113,22 +113,40 @@
   color: #010101;
 }
 
+:root{
+  --newColor: background: linear-gradient(darkorange, blueviolet);
+}
+
 .CuttingEdge {
     z-index: -15;
     height: 100%;
-    background-color: #0060AA;
+    background-image: conic-gradient(
+     #00F070 -45deg 6deg, white 6deg 18deg, black 18deg 45deg,
+     transparent 45deg 110deg, orangered 110deg 140deg, transparent  210deg 200deg),
+    linear-gradient(to right, #F00182, #00F070),
+    conic-gradient(
+     transparent 0deg 6deg, white 60deg 180deg, blueviolet 18deg 45deg,
+     #F00182 45deg 110deg, orangered 180deg 200deg, blueviolet 200deg),
+    linear-gradient(to right, #F00182, #F00182);
+    ;
     margin:0;
     position: relative;
+    background-clip: padding-box; /* !importanté */
+    border: solid $border transparent; /* !importanté */
 }
 
 .CuttingEdge:before {
     z-index: -15;
     content: '';
     position: absolute;
-    top: 0; right: 0;
-    border-top: 800px solid #69BB01;
-    border-left: 500px solid #0060AA;
+    /*#border-top: 800px solid blueviolet;*/
+    /*border-left: 500px solid orangered;*/
     width: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
+    margin: -$border; /* !importanté */
+    border-radius: inherit; /* !importanté */
+    background: linear-gradient(to right, blueviolet, orangered);
+
 }
 
 .Logoutbtn {
@@ -144,7 +162,7 @@
 .LogoutDropDown {
   position: relative;
   display: inline-block;
-  background-image: url('/static/img/Kryptonite_Glow.png') width 121px height 75px;
+  /* background-image: url('/static/img/Kryptonite_Glow.png') width 121px height 75px; */
 }
 
 /* Dropdown Content (Hidden by Default) */

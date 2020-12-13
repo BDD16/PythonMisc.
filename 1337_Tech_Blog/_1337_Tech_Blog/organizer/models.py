@@ -3,7 +3,6 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
 Proof of Concept code, No liabilities or warranties expressed or implied.
 '''
 
-
 from django.db import models
 from django.urls import reverse
 from datetime import datetime
@@ -15,22 +14,28 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from _1337_Tech_Blog.NeutrinoKey.cryptoutils import CryptoTools
 
+# import uuid
+# from cassandra.cqlengine import columns
+# from django_cassandra_engine.models import DjangoCassandraModel
+
 from base64 import (b64encode, b64decode)
 import os
 
 # Create your models here.
 
-#Constants
-musicFS = FileSystemStorage(location = settings.STATIC_ROOT + '/media/music/')
-photoFS = FileSystemStorage(location = settings.STATIC_ROOT + '/media/photos/')
-videoFS = FileSystemStorage(location = settings.STATIC_ROOT + '/media/video/')
-otherFS = FileSystemStorage(location = settings.STATIC_ROOT + '/media/otherfiles/')
-#End of Constants
+# Constants
+musicFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/music/')
+photoFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/photos/')
+videoFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/video/')
+otherFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/otherfiles/')
+# End of Constants
 
 '''
 Tasking Manager is a models.Manager class extension that is used to retrieving the correct Tasking model type
 no inputs
 '''
+
+
 class TaskingManager(models.Manager):
 
     def get_by_natural_key(self, slug):
@@ -43,11 +48,12 @@ is a helper class that does the encrypting used for decompartmentalizing the rol
 Use _encrypt_data to encrypt then store the appropriate model into the "fortressvault" database.  furthermore the Librarian is responsible for securing,
 then organizing data at rest.
 '''
-class Librarian(models.Manager):
-    #NMC = NeutronMatterCollector()
-    #NC = NeutronCore()
-    crypt = CryptoTools()
 
+
+class Librarian(models.Manager):
+    # NMC = NeutronMatterCollector()
+    # NC = NeutronCore()
+    crypt = CryptoTools()
 
     def get_queryset(self):
         qs = models.QuerySet(self.model)
@@ -58,10 +64,10 @@ class Librarian(models.Manager):
     def _encrypt_update_Secure_Note(self, password, **kwargs):
         modeldata = kwargs.pop('secure_text', False)
 
-        req = kwargs.pop('request',False)
-        post = kwargs.pop('postobj',False)
+        req = kwargs.pop('request', False)
+        post = kwargs.pop('postobj', False)
 
-        #Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        # Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         data_kek = NeutronCore().DeriveKek(password)
         data_dek = NeutronMatterCollector().DeriveDek(password)
         nonce = data_dek.result_wrapped_nonce
@@ -70,11 +76,11 @@ class Librarian(models.Manager):
             password = password.encode()
         key = data_dek.unwrapKey(data_kek, password)
 
-        #print("DEK TO USE TO ENCRYPT:")
-        #print(key)
+        # print("DEK TO USE TO ENCRYPT:")
+        # print(key)
 
-        #print("ENCRYPTED DECODED NONCE: ")
-        #print(Librarian.crypt.nonce)
+        # print("ENCRYPTED DECODED NONCE: ")
+        # print(Librarian.crypt.nonce)
         if isinstance(modeldata, str):
             modeldata = modeldata.encode()
         encrypted_data = Librarian.crypt.AesEncryptEAX(modeldata, DEK.crypto.Sha256(key))
@@ -82,10 +88,10 @@ class Librarian(models.Manager):
 
         post.secure_text = encrypted_data
 
-        #data_kek.save()
-        #data_dek.save()
+        # data_kek.save()
+        # data_dek.save()
         post.data_dek.remove(post.data_dek.get())
-        post.data_kek.remove(post.data_kek.get())#change this before deployment
+        post.data_kek.remove(post.data_kek.get())  # change this before deployment
         post.save()
         data_kek.save()
         data_dek.save()
@@ -93,30 +99,29 @@ class Librarian(models.Manager):
         post.data_kek.add(data_kek)
         print("the data_dek id is: ")
         print(post.data_dek.get().id)
-        #SecureNote(secure_text=encrypted_data,
+        # SecureNote(secure_text=encrypted_data,
         #           data_dek=data_dek,
         #           data_kek=data_kek,
         #           slug=request.post.slug,
         #           **kwargs)
 
-        #print(data.secure_text)
-        #print("This is the Secure Text: " + str(encrypted_data))
-        #data.save()
+        # print(data.secure_text)
+        # print("This is the Secure Text: " + str(encrypted_data))
+        # data.save()
         print("SECURED A NOTE: ENCRYPTED Sending off to Save")
         print(dir(post))
         print(post)
         post.save()
         return post
 
-
     def _encrypt_Secure_Note(
             self, password, **kwargs):
         modeldata = kwargs.pop('secure_text', False)
 
-        req = kwargs.pop('request',False)
-        post = kwargs.pop('postobj',False)
+        req = kwargs.pop('request', False)
+        post = kwargs.pop('postobj', False)
 
-        #Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        # Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         data_kek = NeutronCore().DeriveKek(password)
         data_dek = NeutronMatterCollector().DeriveDek(password)
         nonce = data_dek.result_wrapped_nonce
@@ -125,11 +130,11 @@ class Librarian(models.Manager):
             password = password.encode()
         key = data_dek.unwrapKey(data_kek, password)
 
-        #print("DEK TO USE TO ENCRYPT:")
-        #print(key)
+        # print("DEK TO USE TO ENCRYPT:")
+        # print(key)
 
-        #print("ENCRYPTED DECODED NONCE: ")
-        #print(Librarian.crypt.nonce)
+        # print("ENCRYPTED DECODED NONCE: ")
+        # print(Librarian.crypt.nonce)
         if isinstance(modeldata, str):
             modeldata = modeldata.encode()
         encrypted_data = Librarian.crypt.AesEncryptEAX(modeldata, DEK.crypto.Sha256(key))
@@ -143,15 +148,15 @@ class Librarian(models.Manager):
         post.data_dek.add(data_dek)
         print("the data_dek id is: ")
         print(post.data_dek.get().id)
-        #SecureNote(secure_text=encrypted_data,
+        # SecureNote(secure_text=encrypted_data,
         #           data_dek=data_dek,
         #           data_kek=data_kek,
         #           slug=request.post.slug,
         #           **kwargs)
 
-        #print(data.secure_text)
-        #print("This is the Secure Text: " + str(encrypted_data))
-        #data.save()
+        # print(data.secure_text)
+        # print("This is the Secure Text: " + str(encrypted_data))
+        # data.save()
         print("SECURED A NOTE: ENCRYPTED Sending off to Save")
         print(dir(post))
         print(post)
@@ -164,7 +169,7 @@ class Librarian(models.Manager):
 
         req = kwargs.pop('request', False)
         modeldata = req.FILES['file_field'].read()
-        #Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        # Librarian.NMC = NeutronMatterCollector(id=req.user.id, time_generated=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         data_kek = NeutronCore().DeriveKek(password)
         data_dek = NeutronMatterCollector().DeriveDek(password)
         nonce = data_dek.result_wrapped_nonce
@@ -173,39 +178,47 @@ class Librarian(models.Manager):
             password = password.encode()
         key = data_dek.unwrapKey(data_kek, password)
 
-        #print("DEK TO USE TO ENCRYPT:")
-        #print(key)
+        # print("DEK TO USE TO ENCRYPT:")
+        # print(key)
 
-        #print("ENCRYPTED DECODED NONCE: ")
-        #print(Librarian.crypt.nonce)
+        # print("ENCRYPTED DECODED NONCE: ")
+        # print(Librarian.crypt.nonce)
         encrypted_data = Librarian.crypt.AesEncryptEAX(modeldata, DEK.crypto.Sha256(key))
-        #filetemp = NamedTemporaryFile(delete=True, dir=photosFS)
-        #filetemp.write(encrypted_data)
+        # filetemp = NamedTemporaryFile(delete=True, dir=photosFS)
+        # filetemp.write(encrypted_data)
         file_data = ContentFile(encrypted_data)
-        #print(dir(req.FILES['file_field']))
+        # print(dir(req.FILES['file_field']))
         filename = req.FILES['file_field'].name
-        savehere = str(photoFS._location)  + filename
-        #print(savehere)
-        fd = open(os.path.join(photoFS._location,filename) , 'wb+')
+        savehere = str(photoFS._location) + filename
+        # print(savehere)
+        fd = open(os.path.join(photoFS._location, filename), 'wb+')
         fd.write(encrypted_data)
         fd.close()
         data = self.model(
-            image_file = file_data,
-            #image_file=file_data,
+            image_file=file_data,
+            # image_file=file_data,
             **kwargs)
+        print(data)
+        data_dek.save()
+        data_kek.save()
         data.image_file.name = filename
         data.result_nonce_file = nonce
+        data.data_dek.set(data_dek)
+        data.data_kek.set(data_kek)
+        if not data.id:
+            super(self.model, self).save(**kwargs)
         data.save()
-        data.data_kek.add(data_kek)
-        data.data_dek.add(data_dek)
-        #print(data.image_file)
-        #print(data.image_file.name)
-        #print("encryptednonce")
-        #print(data.result_nonce_file)
-        #print(b64decode(data.result_nonce_file))
-        #print("encrypted data firstpass")
-        #print(encrypted_data)
-        #data.update(data_dek=data_dek, data_kek=data_kek)
+        #data.data_kek.add(data_kek)
+        #data.data_dek.add(data_dek)
+
+        # print(data.image_file)
+        # print(data.image_file.name)
+        # print("encryptednonce")
+        # print(data.result_nonce_file)
+        # print(b64decode(data.result_nonce_file))
+        # print("encrypted data firstpass")
+        # print(encrypted_data)
+        # data.update(data_dek=data_dek, data_kek=data_kek)
         print(data)
         print(dir(data))
         print("ENCRYPTED AND SAVED DATA")
@@ -222,9 +235,11 @@ for kryptonian speak.
 
 TODO: Correctly Decrypt MusicFile, VideoFile, and MiscFile using the _decrypt_data function
 '''
+
+
 class Gor_El(models.Manager):
-    #NMC = NeutronMatterCollector()
-    #NC = NeutronCore()
+    # NMC = NeutronMatterCollector()
+    # NC = NeutronCore()
     crypt = CryptoTools()
 
     def get_queryset(self):
@@ -235,53 +250,53 @@ class Gor_El(models.Manager):
 
     def _decrypt_model(self, image_file, **kwargs):
         newpath = photoFS.base_location + str('decrypted_' + str(image_file))
-        #print("DEBUG> NEWPATH: " + str(newpath))
+        # print("DEBUG> NEWPATH: " + str(newpath))
         encryptedFile = open(photoFS.base_location + str(image_file), 'rb').read()
-        #print("DEBUG> Decrypted Data: ")
+        # print("DEBUG> Decrypted Data: ")
         self.crypt.nonce = b64decode(image_file.result_nonce_file)
         password = kwargs.pop('password', False)
-        #print(password)
+        # print(password)
         keyToFile = image_file.data_dek.unwrapKey(image_file.data_kek, password.encode())
-        #print("DEBUG> DECRYPTED NONCE")
-        #print(self.crypt.nonce)
+        # print("DEBUG> DECRYPTED NONCE")
+        # print(self.crypt.nonce)
         hash = CryptoTools()
         plaintext = self.crypt.AesDecryptEAX(encryptedFile, hash.Sha256(keyToFile))
-        #print("DEBUG> PlainText1:")
-        #print(plaintext)
+        # print("DEBUG> PlainText1:")
+        # print(plaintext)
         x = ContentFile(plaintext)
         return x
 
     def _decrypt_text(self, secureNote, request):
-        #print(secureNote)
+        # print(secureNote)
         ciphertext = secureNote.secure_text
-        #nonce = secureNote.result_nonce_text
+        # nonce = secureNote.result_nonce_text
         data_dek = secureNote.data_dek
         print(dir(secureNote))
         data_kek = secureNote.data_kek
 
-        #now make sure their in the correct format
+        # now make sure their in the correct format
         print("datadekobject:")
         print(secureNote.data_dek.get())
         print("datakekobject:")
         print(secureNote.data_kek.get())
         if isinstance(secureNote.data_dek.get().result_wrapped_nonce, str):
-                wrapped_nonce = (secureNote.data_dek.get().result_wrapped_nonce.encode()).replace(b"b'", b'')
-                wrapped_nonce = wrapped_nonce.replace(b"'", b'')
-                wrapped_nonce = wrapped_nonce + b'='*(len(wrapped_nonce) % 4)
-                self.crypt.nonce = b64decode(wrapped_nonce)
+            wrapped_nonce = (secureNote.data_dek.get().result_wrapped_nonce.encode()).replace(b"b'", b'')
+            wrapped_nonce = wrapped_nonce.replace(b"'", b'')
+            wrapped_nonce = wrapped_nonce + b'=' * (len(wrapped_nonce) % 4)
+            self.crypt.nonce = b64decode(wrapped_nonce)
         else:
             self.crypt.nonce = b64decode(secureNote.data_dek.get().result_wrapped_nonce)
 
         if isinstance(secureNote.secure_text, str):
             ciphertext = secureNote.secure_text
             ciphertext = ciphertext.encode('latin1').decode('unicode-escape').encode('latin1')
-            ciphertext = ciphertext[2:len(ciphertext)-1]
-            #ciphertext = ciphertext.replace(b"'", b'')
+            ciphertext = ciphertext[2:len(ciphertext) - 1]
+            # ciphertext = ciphertext.replace(b"'", b'')
         else:
             ciphertext = cipiphertext.encode()
 
-        #print("ciphertext: ")
-        #print(ciphertext)
+        # print("ciphertext: ")
+        # print(ciphertext)
         print("dataKEK ID:")
         print(secureNote.data_kek.get().id)
         data_dek = secureNote.data_dek.get(id=secureNote.data_dek.get().id)
@@ -290,39 +305,37 @@ class Gor_El(models.Manager):
         print(keyToFile)
 
         hash = CryptoTools()
-        #self.crypt.nonce = b64decode(wrapped_nonce)
+        # self.crypt.nonce = b64decode(wrapped_nonce)
         plaintext = self.crypt.AesDecryptEAX(ciphertext, hash.Sha256(keyToFile))
-        #print("DEBUG> PlainText_SecureText:")
-        #print(plaintext)
+        # print("DEBUG> PlainText_SecureText:")
+        # print(plaintext)
 
         return plaintext
-
-
 
     def _decrypt_data(self, password, **kwargs):
         plaintext = None
         f = kwargs.pop('image_file', False)
         req = kwargs.pop('request', False)
         print("DEBUG> DECRYPT THIS FILE:" + str(f.image_file.name))
-        if str(f.image_file).lower().endswith(('.png','.jpg','.jpeg','.tiff')):
-            newpath = photoFS.base_location  + str(f.image_file.name)
-            #print("DEBUG> NEWPATH: " + str(newpath))
-            print("DEBUG>PATH:" + str(os.path.join(photoFS.base_location,str(f.image_file.name))))
-            encryptedFile = open(os.path.join(photoFS.base_location,str(f.image_file.name)), 'rb').read()
+        if str(f.image_file).lower().endswith(('.png', '.jpg', '.jpeg', '.tiff')):
+            newpath = photoFS.base_location + str(f.image_file.name)
+            # print("DEBUG> NEWPATH: " + str(newpath))
+            print("DEBUG>PATH:" + str(os.path.join(photoFS.base_location, str(f.image_file.name))))
+            encryptedFile = open(os.path.join(photoFS.base_location, str(f.image_file.name)), 'rb').read()
             print("DEBUG> Encrypted Data: ")
-            #print(encryptedFile)
-            #print(f.data_kek)
+            # print(encryptedFile)
+            # print(f.data_kek)
             data_kek = f.data_kek
 
             data_dek = f.data_dek
-            #print(password)
+            # print(password)
 
-            #We've got the dek and kek attached to the image file so now to do the decryption
+            # We've got the dek and kek attached to the image file so now to do the decryption
             if isinstance(f.result_nonce_file, str):
                 print(f.result_nonce_file)
                 wrapped_nonce = (f.result_nonce_file).encode('latin1').decode('unicode-escape').encode('latin1')
                 wrapped_nonce = wrapped_nonce[2:-1]
-                wrapped_nonce = wrapped_nonce + b'='*(len(wrapped_nonce) % 4)
+                wrapped_nonce = wrapped_nonce + b'=' * (len(wrapped_nonce) % 4)
                 print('DEBUG33>WRAPPED_NONCE:')
                 print(wrapped_nonce)
                 self.crypt.nonce = b64decode(wrapped_nonce)
@@ -339,31 +352,33 @@ class Gor_El(models.Manager):
             self.crypt.nonce = b64decode(wrapped_nonce)
             plaintext = self.crypt.AesDecryptEAX(encryptedFile, CryptoTools().Sha256(keyToFile))
             print("DEBUG> PlainText1:")
-            #print(plaintext)
+            # print(plaintext)
             return plaintext
-        elif str(f).lower().endswith(('.mp3','.m4p','.flac', '.aac')):
+        elif str(f).lower().endswith(('.mp3', '.m4p', '.flac', '.aac')):
             newpath = musicFS.base_location + str(f)
             encryptedFile = open(newpath, 'rb').read()
-            #print("DEBUG> Encrypted Data: ")
-            #print(encryptedFile)
+            # print("DEBUG> Encrypted Data: ")
+            # print(encryptedFile)
 
             self.crypt.nonce = b64decode(wrapped_nonce)
 
-            #We've got the dek and kek attached to the image file so now to do the decryption
-            plaintext = self.crypt.AesDecryptEAX(encryptedFile,f.data_dek.unwrapKey(f.data_kek, password.encode()))
+            # We've got the dek and kek attached to the image file so now to do the decryption
+            plaintext = self.crypt.AesDecryptEAX(encryptedFile, f.data_dek.unwrapKey(f.data_kek, password.encode()))
             print("DEBUG> PlainText2:")
-            #print(plaintext)
+            # print(plaintext)
 
         return plaintext
+
 
 '''
 Tag is a generic "model" class that contains two charfields:name and slug, the name is for the title of the tag and the slug is for the unique url
 no inputs
 '''
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=32, unique=True)
     slug = models.SlugField(max_length=32, unique=True, help_text='A label for URL config.')
-
 
     class Meta:
         ordering = ['name']
@@ -379,18 +394,20 @@ class Tag(models.Model):
 Tasking is a model class that contains a name slug, asignee, project_codename, description, and assigned_date It is used to keep track of your work
 no inputs
 '''
+
+
 class Tasking(models.Model):
-    name = models.CharField(max_length=32,unique=True, db_index=True)
-    slug = models.SlugField(max_length=32,unique=True, db_index=True)
+    name = models.CharField(max_length=32, unique=True, db_index=True)
+    slug = models.SlugField(max_length=32, unique=True, db_index=True)
     asignee = models.CharField(max_length=16, db_index=True)
     project_codename = models.CharField(default='SandStorm', max_length=32, db_index=True)
     description = models.TextField()
-    assigned_date = models.DateTimeField('date assigned',unique=True, auto_now_add=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    assigned_date = models.DateTimeField('date assigned', unique=True,
+                                         auto_now_add=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     is_complete = models.BooleanField(default=False)
 
     objects = TaskingManager()
-
 
     class Meta:
         ordering = ['name']
@@ -408,10 +425,13 @@ class Tasking(models.Model):
     def natural_key(self):
         return (self.slug,)
 
+
 '''
 Startup is  a model class that contains a name, slug, description, founded_date, contact, website, and associated tags. This is used for a startup company
 no inputs
 '''
+
+
 class Startup(models.Model):
     name = models.CharField(max_length=32, db_index=True)
     slug = models.SlugField(max_length=32, unique=True, help_text='A label for URL config.')
@@ -436,8 +456,10 @@ class Startup(models.Model):
 NewsLink is a models.Model class that contains a title, pub_date, link, and startup used for publishing articles
 no inputs
 '''
+
+
 class NewsLink(models.Model):
-    title= models.CharField(max_length=64)
+    title = models.CharField(max_length=64)
     pub_date = models.DateField('date published')
     link = models.URLField(max_length=64)
     startup = models.ForeignKey(Startup, on_delete=models.CASCADE)
@@ -456,24 +478,29 @@ MusicFile is a models.Model that contains image_file, data_dek, data_kek, and re
 music folder
 no inputs
 '''
+
+
 class MusicFile(models.Model):
     image_file = models.FileField(storage=musicFS, default=None)
-    data_dek = models.ForeignKey(DEK, default=1, on_delete = models.CASCADE)
-    data_kek = models.ForeignKey(KEK, default=1, on_delete= models.CASCADE)
-    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4,'big')))
+    data_dek = models.ForeignKey(DEK, default=1, on_delete=models.CASCADE)
+    data_kek = models.ForeignKey(KEK, default=1, on_delete=models.CASCADE)
+    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4, 'big')))
 
     objects = Librarian()
 
     class Meta:
         ordering = ['image_file']
+
     def __str__(self):
         return str(self.image_file)
 
     def get_absolute_url(self):
-        return reverse('organizer_download_pull', kwargs={'image_file': self.image_file})#Need to test if actually works for download or if the function needs to decrypt
+        return reverse('organizer_download_pull', kwargs={
+            'image_file': self.image_file})  # Need to test if actually works for download or if the function needs to decrypt
 
     def get_update_url(self):
-        return reverse('organizer_upload_create', kwargs={'image_file': self.image_file})#Need to test if actually works for upload or if the function needs to encrypt
+        return reverse('organizer_upload_create', kwargs={
+            'image_file': self.image_file})  # Need to test if actually works for upload or if the function needs to encrypt
 
     def natural_key(self):
         return (self.image_file,)
@@ -487,33 +514,38 @@ ImageFile is a models.Model class that contains a image_file, data_dek, data_kek
 common image files will be .png, .tiff, .bmp
 no inputs
 '''
+
+
 class ImageFile(models.Model):
     image_file = models.FileField(storage=photoFS, default=None)
     data_dek = models.ManyToManyField(DEK, default=1)
     data_kek = models.ManyToManyField(KEK, default=1)
-    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4,'big')))
+    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4, 'big')))
 
     objects = Librarian()
 
     class Meta:
         ordering = ['-image_file']
+
     def __str__(self):
         return str(self.image_file)
 
     def get_absolute_url(self, **kwargs):
         if str(self.image_file) != '':
             print(dir(self))
-            return reverse('organizer_download_pull', kwargs={'image_file': self.image_file })#Need to test if actually works for download or if the function needs to decrypt
+            return reverse('organizer_download_pull', kwargs={
+                'image_file': self.image_file})  # Need to test if actually works for download or if the function needs to decrypt
 
     def get_update_url(self):
         if str(self.image_file) != '':
-            return reverse('organizer_upload_create', kwargs={'image_file': self.image_file })#Need to test if actually works for upload or if the function needs to encrypt
+            return reverse('organizer_upload_create', kwargs={
+                'image_file': self.image_file})  # Need to test if actually works for upload or if the function needs to encrypt
 
     def natural_key(self):
         return (self.image_file,)
 
     natural_key.dependencies = [
-       # 'organizer.startup',
+        # 'organizer.startup',
         'NeutrinoKey.DEK',
         'NeutrinoKey.KEK',
     ]
@@ -524,71 +556,83 @@ VideoFile is a models.Model type class that contains image_file, data_dek, data_
 common video formats will be .mpg, .mp4, .avi, .mkv
 no inputs
 '''
+
+
 class VideoFile(models.Model):
     image_file = models.FileField(storage=videoFS, default=None)
     data_dek = models.ManyToManyField(DEK, default=1)
     data_kek = models.ManyToManyField(KEK, default=1)
-    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4,'big')))
+    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4, 'big')))
 
     objects = Librarian()
 
     class Meta:
         ordering = ['-image_file']
+
     def __str__(self):
         return str(self.image_file)
 
     def get_absolute_url(self):
-        return reverse('organizer_download_pull', kwargs={'image_file': str(self.image_file)})#Need to test if actually works for download or if the function needs to decrypt
+        return reverse('organizer_download_pull', kwargs={'image_file': str(
+            self.image_file)})  # Need to test if actually works for download or if the function needs to decrypt
 
     def get_update_url(self):
-        return reverse('organizer_upload_create', kwargs={'image_file': self.image_file})#Need to test if actually works for upload or if the function needs to encrypt
+        return reverse('organizer_upload_create', kwargs={
+            'image_file': self.image_file})  # Need to test if actually works for upload or if the function needs to encrypt
 
     def natural_key(self):
         return (self.image_file,)
 
     def natural_key(self):
         return (self.image_file,)
+
 
 '''
 MiscFile is a models.Model type class extension that includes an image_file, data_dek, data_kek, and result_nonce_file that is used to encrypt and organize
 extension file types that haven't been listed in previous classes such as ImageFile, MusicFile, and VideoFile
 no inputs
 '''
+
+
 class MiscFile(models.Model):
     image_file = models.FileField(storage=otherFS, default=None)
-    data_dek = models.ForeignKey(DEK, default=1, on_delete = models.CASCADE)
-    data_kek = models.ForeignKey(KEK, default=1, on_delete= models.CASCADE)
-    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4,'big')))
+    data_dek = models.ForeignKey(DEK, default=1, on_delete=models.CASCADE)
+    data_kek = models.ForeignKey(KEK, default=1, on_delete=models.CASCADE)
+    result_nonce_file = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4, 'big')))
 
     objects = Librarian()
 
     class Meta:
         ordering = ['-image_file']
+
     def __str__(self):
         return str(self.image_file)
 
     def get_absolute_url(self):
-        return reverse('organizer_download_pull', kwargs={'image_file': self.image_file})#Need to test if actually works for download or if the function needs to decrypt
+        return reverse('organizer_download_pull', kwargs={
+            'image_file': self.image_file})  # Need to test if actually works for download or if the function needs to decrypt
 
     def get_update_url(self):
-        return reverse('organizer_upload_create', kwargs={'image_file': self.image_file})#Need to test if actually works for upload or if the function needs to encrypt
+        return reverse('organizer_upload_create', kwargs={
+            'image_file': self.image_file})  # Need to test if actually works for upload or if the function needs to encrypt
 
     def natural_key(self):
         return (self.image_file,)
 
     def natural_key(self):
         return (self.image_file,)
+
 
 class SecureNote(models.Model):
     slug = models.SlugField(max_length=32, unique=True, db_index=True, help_text='A label for URL config.')
-    title= models.CharField(max_length=64, default='Bruh, Change the Title')
+    title = models.CharField(max_length=64, default='Bruh, Change the Title')
     pub_date = models.DateTimeField('date published', auto_now_add=timezone.now())
     secure_text = models.TextField(default="Please add Note Text")
     data_dek = models.ManyToManyField(DEK, default=1, related_name='data_dek')
     data_kek = models.ManyToManyField(KEK, default=1, related_name='data_kek')
-    result_nonce_text = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4,'big')))
+    result_nonce_text = models.CharField(max_length=128, default=b64encode(int(55).to_bytes(4, 'big')))
 
-    #objects = Librarian()
+    # objects = Librarian()
 
     class Meta:
         abstract = True

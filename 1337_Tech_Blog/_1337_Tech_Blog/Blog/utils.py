@@ -3,7 +3,6 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
 Proof of Concept code, No liabilities or warranties expressed or implied.
 '''
 
-
 from django.shortcuts import get_object_or_404
 from django.http import (
     Http404, HttpResponseRedirect)
@@ -19,7 +18,8 @@ class PostFormValidMixin:
     def form_valid(self, form):
         self.object = form.save(self.request)
         return HttpResponseRedirect(
-            self.get_success_url())
+                self.get_success_url())
+
 
 class PostGetMixin:
 
