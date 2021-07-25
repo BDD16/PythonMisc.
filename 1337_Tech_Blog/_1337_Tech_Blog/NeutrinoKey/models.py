@@ -14,6 +14,7 @@ from datetime import datetime
 from .cryptoutils import CryptoTools
 from base64 import b64encode, b64decode
 from django.contrib.auth import get_user_model
+from typing import Union
 
 # Create your models here.
 
@@ -92,11 +93,11 @@ class KEK(models.Model):
         verbose_name = 'KEK'
 
     def unwrap_key(self, password):
-        if isinstance(password, str) and self.kek == None and self.wrappedKek == None:
+        if isinstance(password, str) and self.kek is None and self.wrappedKek is None:
             self.crypto.nonce = b64decode(self.result_wrapped_nonce)
             self.kek = self.crypto.AesDecryptEAX(b64decode(self.result_wrapped_kek),
                                                  self.crypto.Sha256(password.encode()))
-        if isinstance(password, bytes) and self.kek == None and self.wrappedKek == None:
+        if isinstance(password, bytes) and self.kek is None and self.wrappedKek is None:
             if isinstance(self.result_wrapped_nonce, str):
                 result_wrapped_nonce = (self.result_wrapped_nonce.encode()).replace(b"b'", b'')
                 result_wrapped_nonce = result_wrapped_nonce[:-1]
@@ -128,8 +129,8 @@ class KEK(models.Model):
 
         return self.kek
 
-    def wrapKey(self, password):
-        if isinstance(password, str) and self.kek == None:
+    def wrapKey(self, password: Union[str, bytes], data: bytes) -> bytes:
+        if isinstance(password, str) and self.kek is None:
             self.kek = self.crypto.AesEncryptEAX(data, self.crypto.Sha256(password.encode()))
             self.wrappedKek = self.kek
             self.kek = None
@@ -138,7 +139,7 @@ class KEK(models.Model):
             self.kek = self.crypto.AesEncryptEAX(data, self.crypto.Sha256(password))
             self.wrappedKek = b64encode(self.kek)
             self.kek = None
-        elif self.kek != None:
+        elif self.kek is not None:
             try:
                 self.crypto.nonce = b64decode(self.result_wrapped_nonce)
                 if isinstance(password, bytes):
@@ -155,15 +156,13 @@ class KEK(models.Model):
         return self.wrappedKek
 
 
-'''
-using the model of KEK unwrap and wrap the kek then unwrap the dek then pass the dek to a more useable object
-perhaps this will also fetch the dek that is associated with that data model, so needs to be a manytomany relation.
-
-DEK is a models.Model or Data Encryption Key class that allows to store, derive, and wrap Data Encryption Keys from a KEK and Salt
-'''
-
-
 class DEK(models.Model):
+    """
+    using the model of KEK unwrap and wrap the kek then unwrap the dek then pass the dek to a more useable object
+    perhaps this will also fetch the dek that is associated with that data model, so needs to be a manytomany relation.
+
+    DEK is a models.Model or Data Encryption Key class that allows to store, derive, and wrap Data Encryption Keys from a KEK and Salt
+    """
     crypto = CryptoTools()
     dek = None
     wrappedDek = None
@@ -179,7 +178,7 @@ class DEK(models.Model):
     class Meta:
         verbose_name = 'DEK'
 
-    def wrapKey(self, kek, password):
+    def wrapKey(self, kek: KEK, password: Union[str, bytes]) -> bytes:
         if isinstance(kek, KEK) and isinstance(password, str):
             kek.unwrap_key(password)
             self.crypto.nonce = b64decode(kek.result_wrapped_nonce)
@@ -206,7 +205,7 @@ class DEK(models.Model):
             except:
                 print('someone has attempted to spoof the DEK (data encryption key)')
 
-    def unwrapKey(self, kek, password):
+    def unwrapKey(self, kek: KEK, password) -> bytes:
         if isinstance(kek, KEK) and isinstance(password, str):
             master = kek.unwrap_key(password.encode())
 
@@ -227,7 +226,7 @@ class DEK(models.Model):
             elif isinstance(self.result_wrapped_nonce, bytes):
                 self.crypto.nonce = b64decode(self.result_wrapped_nonce)
 
-            if (not isinstance(self.result_wrappedDek, bytes)):
+            if not isinstance(self.result_wrappedDek, bytes):
                 result_wrappedDek = (self.result_wrappedDek.encode()).replace(b"b'", b'')
                 result_wrappedDek = result_wrappedDek[:-1]
                 wrapper = result_wrappedDek + b'=' * (len(result_wrappedDek) % 4)
@@ -259,7 +258,7 @@ class DEK(models.Model):
                 print('someone has attempted to spoof the KEK2 (key encryption key)')
 
 
-def DeriveKek_default(password):
+def DeriveKek_default(password: Union[str, bytes]) -> KEK:
     """
     function to DeriveKek_default from an arbitrary password
     """
@@ -309,7 +308,7 @@ class NeutronCore(models.Model):
         ordering = ['-time_generated']
         get_latest_by = 'time_generated'
 
-    def DeriveKek(self, password):
+    def DeriveKek(self, password: Union[str, bytes]) -> KEK:
         crypto = CryptoTools()
         if len(crypto.Sha256(password.encode())) != LENGTH_OF_KEK:
             print('ERROR> NOT ENOUGH BYTES IN PASSWORD FOR DEK, NEED 32')
@@ -331,7 +330,7 @@ class NeutronCore(models.Model):
             print("ERROR>UNABLE TO GENERATE WRAPPED KEK, USE A CORRECT KEY FORMAT FOR WRAPPING")
 
 
-def DeriveDek_default(password):
+def DeriveDek_default(password: Union[str, bytes]) -> DEK:
     crypto = CryptoTools()
     self.kekForDek = NeutronCore(get_user_model()).DeriveKek(password)
     if isinstance(self.kekForDek, KEK):
@@ -388,7 +387,7 @@ class NeutronMatterCollector(models.Model):
         ordering = ['-time_generated']
         get_latest_by = 'time_generated'
 
-    def DeriveDek(self, password):
+    def DeriveDek(self, password: Union[str, bytes]) -> DEK:
         crypto = CryptoTools()
         if isinstance(NeutronMatterCollector.kekForDek, KEK):
             if password != None and isinstance(password, str):
@@ -409,29 +408,20 @@ class NeutronMatterCollector(models.Model):
         else:
             self.kekForDek = NeutronCore(get_user_model()).DeriveKek(password)
             if isinstance(self.kekForDek, KEK):
-                if password != None and isinstance(password, str):
+                if password is not None and isinstance(password, str):
                     # Generate DEK based off this formula sha256(256 bit SALT + KEK)
                     self.SALT = crypto.RandomNumber(32)
                     crypto.nonce = b64decode(self.kekForDek.result_wrapped_nonce)
-                    # print(self.kekForDek.result_wrapped_nonce)
-                    # print(self.kekForDek.result_wrapped_kek)
-                    # print(password)
                     DerivedDek = crypto.Sha256(
                         bytes(self.SALT) + crypto.AesDecryptEAX(b64decode(self.kekForDek.result_wrapped_kek),
                                                                 crypto.Sha256(bytes(password.encode()))))
-                    # self.dekgenerator.id.set(self.request.user)
 
                     dek = DerivedDek
-                    # newkey = DEK()
-                    # newkey.dek = dek
-                    # dek = DEK.wrapKey(newkey, kek=self.kekForDek, password=password.encode())
                     dek = crypto.AesEncryptEAX(dek, crypto.Sha256(
                         crypto.AesDecryptEAX(b64decode(self.kekForDek.result_wrapped_kek),
                                              crypto.Sha256(bytes(password.encode())))))
                     newDek = DEK(result_wrappedDek=b64encode(dek), result_SALT=b64encode(self.SALT),
                                  result_wrapped_nonce=b64encode(crypto.nonce), id=self.id)
-                    # newDek.kek_to_retrieve.set(self.dekgenerator)
-                    # self.time_generated = models.DateTimeField('date integrated', auto_now_add=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     self.save()
                     newDek.save()
                     self.dekgenerator.add(newDek)
