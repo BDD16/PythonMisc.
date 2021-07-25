@@ -3,7 +3,6 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
 Proof of Concept code, No liabilities or warranties expressed or implied.
 '''
 
-
 from django.db import models
 
 from django.urls import reverse, reverse_lazy
@@ -12,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from _1337_Tech_Blog.organizer.models import Startup, Tag, Tasking, SecureNote, Librarian
 from _1337_Tech_Blog.organizer.models import SecureNote
+
+
 # Create your models here.
 
 class PostQueryset(models.QuerySet):
@@ -20,10 +21,13 @@ class PostQueryset(models.QuerySet):
         return self.filter(
             pub_date__lte=date.today())
 
+
 '''
 Base Post Manager for unencrypted text model
 input None
 '''
+
+
 class BasePostManager(models.Manager):
 
     def get_queryset(self):
@@ -32,12 +36,13 @@ class BasePostManager(models.Manager):
                 self.model,
                 using=self._db,
                 hints=self._hints))
-            #.select_related('author__username'))
+        # .select_related('author__username'))
 
     def get_by_natural_key(self, pub_date, slug):
         return self.get(
             pub_date=pub_date,
             slug=slug)
+
 
 class SecurePostManager(models.Manager):
 
@@ -46,26 +51,24 @@ class SecurePostManager(models.Manager):
             selfmodel,
             using=self._db,
             hints=self._hints)
+
     def get_by_natrual_key(self, pub_date, slug):
         return self.get(
             pub_date=pub_date,
             slug=slug)
+
 
 PostManager = BasePostManager.from_queryset(
     PostQueryset)
 
 
 class SecureDataAtRestPost(SecureNote):
-    #title = models.CharField(max_length=64)
-    #slug = models.SlugField(max_length=64, help_text='A label for URL config', unique_for_month='pub_date')
     author = models.ForeignKey(
         get_user_model(),
         related_name='secureblog_posts',
         on_delete=models.CASCADE,
         default=1)
-    #pub_date = models.DateField('date published', auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='secureblog_posts')
-    #startups = models.ManyToManyField(Startup, related_name='blog_posts')
     tasking = models.ManyToManyField(Tasking, related_name='securetasking')
     is_encrypted = models.BooleanField(default=True)
 
@@ -77,10 +80,15 @@ class SecureDataAtRestPost(SecureNote):
         get_latest_by = 'pub_date'
         permissions = (
             ("view_future_post",
-            "Can view unpublished Post"),
+             "Can view unpublished Post"),
             ("add_tasking",
              "Can add task"),
-            )
+        )
+
+    def __str__(self):
+        return "{} on {}".format(
+            self.title,
+            self.pub_date.strftime('%Y-%m-%d'))
 
     def get_absolute_url(self):
         return reverse(
@@ -118,11 +126,8 @@ class SecureDataAtRestPost(SecureNote):
         return (
             self.pub_date,
             self.slug)
+
     natural_key.dependencies = [
-       # 'organizer.startup',
-        #'NeutrinoKey.DEK',
-        #'NeutrinoKey.KEK',
-        #'organizer.tag',
         'user.user',
     ]
 
@@ -138,10 +143,11 @@ class SecureDataAtRestPost(SecureNote):
         return short
 
 
-
 '''
 class Post of models.Model type class extension.  includes title, slug, author, text, pub_date, tags, and tasking
 '''
+
+
 class Post(models.Model):
     title = models.CharField(max_length=64)
     slug = models.SlugField(max_length=64, help_text='A label for URL config', unique_for_month='pub_date')
@@ -153,7 +159,6 @@ class Post(models.Model):
     text = models.TextField()
     pub_date = models.DateField('date published', auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='blog_posts')
-    #startups = models.ManyToManyField(Startup, related_name='blog_posts')
     tasking = models.ManyToManyField(Tasking, related_name='tasking')
 
     objects = PostManager()
@@ -164,10 +169,10 @@ class Post(models.Model):
         get_latest_by = 'pub_date'
         permissions = (
             ("view_future_post",
-            "Can view unpublished Post"),
+             "Can view unpublished Post"),
             ("add_tasking",
              "Can add task"),
-            )
+        )
 
     def __str__(self):
         return "{} on {}".format(
@@ -210,8 +215,8 @@ class Post(models.Model):
         return (
             self.pub_date,
             self.slug)
+
     natural_key.dependencies = [
-       # 'organizer.startup',
         'organizer.tag',
         'user.user',
     ]
