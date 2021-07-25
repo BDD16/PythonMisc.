@@ -66,7 +66,7 @@ class Librarian(models.Manager):
         Librarian.crypt.nonce = b64decode(nonce)
         if not isinstance(password, bytes):
             password = password.encode()
-        key = data_dek.unwrapKey(data_kek, password)
+        key = data_dek.unwrap_key(data_kek, password)
 
         if isinstance(modeldata, str):
             modeldata = modeldata.encode()
@@ -99,7 +99,7 @@ class Librarian(models.Manager):
         Librarian.crypt.nonce = b64decode(nonce)
         if not isinstance(password, bytes):
             password = password.encode()
-        key = data_dek.unwrapKey(data_kek, password)
+        key = data_dek.unwrap_key(data_kek, password)
 
         if isinstance(modeldata, str):
             modeldata = modeldata.encode()
@@ -128,7 +128,7 @@ class Librarian(models.Manager):
         Librarian.crypt.nonce = b64decode(nonce)
         if not isinstance(password, bytes):
             password = password.encode()
-        key = data_dek.unwrapKey(data_kek, password)
+        key = data_dek.unwrap_key(data_kek, password)
 
         encrypted_data = Librarian.crypt.AesEncryptEAX(modeldata, DEK.crypto.Sha256(key))
         file_data = ContentFile(encrypted_data)
@@ -176,7 +176,7 @@ class Gor_El(models.Manager):
         encryptedFile = open(photoFS.base_location + str(image_file), 'rb').read()
         self.crypt.nonce = b64decode(image_file.result_nonce_file)
         password = kwargs.pop('password', False)
-        keyToFile = image_file.data_dek.unwrapKey(image_file.data_kek, password.encode())
+        keyToFile = image_file.data_dek.unwrap_key(image_file.data_kek, password.encode())
         hash = CryptoTools()
         plaintext = self.crypt.AesDecryptEAX(encryptedFile, hash.Sha256(keyToFile))
         x = ContentFile(plaintext)
@@ -207,7 +207,7 @@ class Gor_El(models.Manager):
         print("dataKEK ID:")
         print(secureNote.data_kek.get().id)
         data_dek = secureNote.data_dek.get(id=secureNote.data_dek.get().id)
-        keyToFile = data_dek.unwrapKey(secureNote.data_kek.get(), request.user.password.encode())
+        keyToFile = data_dek.unwrap_key(secureNote.data_kek.get(), request.user.password.encode())
         print("DEBUG> KEYTOFILE DECRYPTING SECURE TEXT: ")
         print(keyToFile)
 
@@ -241,7 +241,7 @@ class Gor_El(models.Manager):
             else:
                 self.crypt.nonce = b64decode(f.data_dek.get().result_nonce_file)
 
-            keyToFile = data_dek.get().unwrapKey(data_kek.get(), password.encode())
+            keyToFile = data_dek.get().unwrap_key(data_kek.get(), password.encode())
             plaintext = self.crypt.AesDecryptEAX(encryptedFile, CryptoTools().Sha256(keyToFile))
             return plaintext
 
@@ -251,18 +251,15 @@ class Gor_El(models.Manager):
 
             # We've got the dek and kek attached to the image file so now to do the decryption
             if isinstance(f.result_nonce_file, str):
-                print(f.result_nonce_file)
                 wrapped_nonce = (f.result_nonce_file).encode('latin1').decode('unicode-escape').encode('latin1')
                 wrapped_nonce = wrapped_nonce[2:-1]
                 wrapped_nonce = wrapped_nonce + b'=' * (len(wrapped_nonce) % 4)
-                print('DEBUG33>WRAPPED_NONCE:')
-                print(wrapped_nonce)
                 self.crypt.nonce = b64decode(wrapped_nonce)
             else:
                 self.crypt.nonce = b64decode(f.data_dek.get().result_nonce_file)
 
             # We've got the dek and kek attached to the image file so now to do the decryption
-            plaintext = self.crypt.AesDecryptEAX(encryptedFile, f.data_dek.unwrapKey(f.data_kek, password.encode()))
+            plaintext = self.crypt.AesDecryptEAX(encryptedFile, f.data_dek.unwrap_key(f.data_kek, password.encode()))
             print("DEBUG> PlainText2:")
 
         return plaintext
