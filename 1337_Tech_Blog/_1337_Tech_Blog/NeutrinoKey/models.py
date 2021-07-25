@@ -112,6 +112,9 @@ class KEK(models.Model):
             elif isinstance(self.result_wrapped_kek, bytes):
                 result_wrapped_kek = self.result_wrapped_kek
             self.kek = self.crypto.AesDecryptEAX(b64decode(result_wrapped_kek), CryptoTools().Sha256(password))
+            # TODO: Come up with a SecureErase of objects and classes to wipe out of memory decryption artifacts
+            del result_wrapped_kek
+            del self.result_wrapped_kek
 
         else:
             try:
@@ -119,7 +122,7 @@ class KEK(models.Model):
                 if not isinstance(password, bytes):
                     password = password.encode()
                 self.kek = self.crypto.AesDecryptEAX(b64decode(self.result_wrapped_kek), self.crypto.Sha256(password))
-                self.wrappedKek = None
+                del self.wrappedKek
             except Exception as e:
                 print(f'someone has attempted to spoof the KEK (key encryption key): {e}')
 
