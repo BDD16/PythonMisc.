@@ -1,3 +1,8 @@
+"""
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
+Proof of Concept code, No liabilities or warranties expressed or implied.
+"""
+
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.Random import get_random_bytes
 from Crypto.Hash   import SHA256

@@ -1,4 +1,8 @@
 """
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
+Proof of Concept code, No liabilities or warranties expressed or implied.
+"""
+"""
 _1337_Tech_Blog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:

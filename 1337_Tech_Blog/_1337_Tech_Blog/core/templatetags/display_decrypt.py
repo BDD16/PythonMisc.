@@ -1,7 +1,7 @@
-'''
-DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
+"""
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
-'''
+"""
 
 
 from django.core.exceptions import \
@@ -28,12 +28,6 @@ def decrypt_text(secure_note, context):
     gor_el = Gor_El()
     secure_text = context['secureddataatrestpost']
     return gor_el._decrypt_text(secure_text, context)
-#@register.filter(name='decrypt_text')
-#@register.simple_tag(takes_context=True, name='decrypt_text')
-#def decrypt_text(context, text):
-#    request = context["request"]
-#    gor_el = Gor_El()
-#    return gor_el._decrypt_text(text, request)
 
 @register.inclusion_tag(
     'core/includes/downloads.html',

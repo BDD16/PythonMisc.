@@ -1,9 +1,15 @@
+"""
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
+Proof of Concept code, No liabilities or warranties expressed or implied.
+"""
+
 from django import forms
-from .models import Post 
+from .models import Post
+
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = Post 
+        model = Post
         fields = '__all__'
 
     def clean_slug(self):

@@ -1,3 +1,8 @@
+"""
+DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
+Proof of Concept code, No liabilities or warranties expressed or implied.
+"""
+
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.decorators import (
@@ -7,25 +12,6 @@ from django.core.exceptions import \
 from django.utils.decorators import \
     method_decorator
 from django.views.generic import View
-'''
-def require_authenticated_permission(permission):
-
-    def decorator(view):
-        print(view)
-        #view must be a method
-        check_auth = (
-            method_decorator(login_required))
-        check_perm = (
-            method_decorator(
-                permission_required(
-                    permission,
-                    raise_exception=True)))
-
-        decorated_view = (check_auth(check_perm(view)))
-        return decorated_view
-
-    return decorator
-'''
 
 def class_login_required(cls):
     if (not isinstance(cls, type)
