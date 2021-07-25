@@ -1,5 +1,5 @@
 """
-DBA copyright May 2020 by 1337_TECH
+DBA copyright May 2021 by 1337_TECH
 Austin, Texas
 All Rights Reserved, No Warranties implied or expressed.
 https://github.com/BDD16/PythonMisc..git
