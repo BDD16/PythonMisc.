@@ -3,9 +3,7 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
-
 from django import forms
-from django.contrib.auth import get_user
 from django.contrib.auth.forms import UserCreationForm
 
 from .models import User
@@ -14,12 +12,13 @@ from .models import User
 class RegisterForm(UserCreationForm):
     email = forms.CharField(max_length=32)
     pwd = forms.CharField(max_length=32, min_length=7)
+
     class Meta:
         model = User
         widgets = {
-        'pwd': forms.PasswordInput(),
+            'pwd': forms.PasswordInput(),
         }
-        fields = ('email', 'pwd', )
+        fields = ('email', 'pwd',)
 
     '''
     def save(self):
