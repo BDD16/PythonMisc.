@@ -242,7 +242,6 @@ class Gor_El(models.Manager):
                 self.crypt.nonce = b64decode(f.data_dek.get().result_nonce_file)
 
             keyToFile = data_dek.get().unwrapKey(data_kek.get(), password.encode())
-            self.crypt.nonce = b64decode(wrapped_nonce)
             plaintext = self.crypt.AesDecryptEAX(encryptedFile, CryptoTools().Sha256(keyToFile))
             return plaintext
 
