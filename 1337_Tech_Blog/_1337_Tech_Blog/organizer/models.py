@@ -151,18 +151,16 @@ class Librarian(models.Manager):
         return data
 
 
-'''
-Gor_El is a models.Manager class extension that includes a NeutronMatterCollector object, NeutronCore object, and CryptoTools object it is used to
-retrieve data from the fortressvault database as well as to answer the questions of Kal-El or simply decrypts the information stored on the server
-includes two flavors of decryption _decrypt_model and _decrypt_data as of writing only ImageFiles can be correctly decrypted. Furthermore Gor_El is
-responsible for retrieving and then decrypting data at rest while ensuring that the original data remains secured at rest.  Thus it acts as an interpretor
-for kryptonian speak.
-
-TODO: Correctly Decrypt MusicFile, VideoFile, and MiscFile using the _decrypt_data function
-'''
-
-
 class Gor_El(models.Manager):
+    """
+    Gor_El is a models.Manager class extension that includes a NeutronMatterCollector object, NeutronCore object, and CryptoTools object it is used to
+    retrieve data from the fortressvault database as well as to answer the questions of Kal-El or simply decrypts the information stored on the server
+    includes two flavors of decryption _decrypt_model and _decrypt_data as of writing only ImageFiles can be correctly decrypted. Furthermore Gor_El is
+    responsible for retrieving and then decrypting data at rest while ensuring that the original data remains secured at rest.  Thus it acts as an interpretor
+    for kryptonian speak.
+
+    TODO: Correctly Decrypt MusicFile, VideoFile, and MiscFile using the _decrypt_data function
+    """
     crypt = CryptoTools()
 
     def get_queryset(self):
