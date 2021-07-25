@@ -6,16 +6,11 @@ Proof of Concept code, No liabilities or warranties expressed or implied.
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib.auth.decorators import login_required, permission_required
-
-from django.shortcuts import render
+from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth import PermissionDenied
-from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.decorators import login_required
+from django.views.generic import (ListView)
+
 from .forms import DownloadFileForm
-from django.views.generic import (ArchiveIndexView, CreateView, DetailView, ListView, MonthArchiveView, View,
-                                  YearArchiveView)
 
 
 # Create your views here.

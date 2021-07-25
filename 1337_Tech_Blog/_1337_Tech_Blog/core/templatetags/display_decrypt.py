@@ -3,14 +3,9 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
-
-from django.core.exceptions import \
-    ImproperlyConfigured
-from django.urls import reverse
+from _1337_Tech_Blog.organizer.models import Gor_El
 from django.template import (
     Library, TemplateSyntaxError)
-from django.template.defaultfilters import stringfilter
-from _1337_Tech_Blog.organizer.models import Gor_El
 
 # https://docs.djangoproject.com/en/1.8/howto/custom-template-tags/
 

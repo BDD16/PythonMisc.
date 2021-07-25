@@ -3,8 +3,6 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
-
-from django.http import HttpResponseRedirect
 from django.shortcuts import (
     get_object_or_404, redirect, render)
 from django.views.generic import View

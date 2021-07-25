@@ -3,23 +3,20 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
-
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-from django.views import View
-from django.views.generic import (ArchiveIndexView, CreateView, DeleteView, DetailView, MonthArchiveView, View, YearArchiveView)
-from django.utils.decorators import method_decorator
 from _1337_Tech_Blog.core.utils import UpdateView
-from .models import Post, SecureDataAtRestPost
-from .forms import PostForm, SecurePostForm
-from django.urls import reverse, reverse_lazy
-from .decorators import require_authenticated_permission
-from _1337_Tech_Blog.organizer.models import SecureNote
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import (ArchiveIndexView, CreateView, DeleteView, DetailView, MonthArchiveView,
+                                  YearArchiveView)
 
+from .decorators import require_authenticated_permission
+from .forms import PostForm, SecurePostForm
+from .models import Post, SecureDataAtRestPost
 from .utils import (
     AllowFuturePermissionMixin, DateObjectMixin,
     PostFormValidMixin, PostGetMixin, SecurePostGetMixin)
+
+
 # Create your views here.
 
 def greeting(request):

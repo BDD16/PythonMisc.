@@ -5,6 +5,7 @@ Proof of Concept code, No liabilities or warranties expressed or implied.
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse
 
 from .models import User
 
@@ -19,12 +20,6 @@ class RegisterForm(UserCreationForm):
             'pwd': forms.PasswordInput(),
         }
         fields = ('email', 'pwd',)
-
-    '''
-    def save(self):
-        new_user = User.objects._create_user(email=self.cleaned_data['user'], is_staff=False, is_superuser=False, password=self.pwd)
-
-    '''
 
     def clean_email(self):
         return self.cleaned_data['email'].lower()

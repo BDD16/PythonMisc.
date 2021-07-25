@@ -18,12 +18,3 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
-from django.contrib.auth import urls as auth_urls
-from _1337_Tech_Blog.superhero import urls as user_urls
-from django.contrib.auth.decorators import login_required
-
-urlpatterns = [
-    url(r'^create/$', login_required(TagCreate.as_view()), name='organizer_tag_create'),
-]

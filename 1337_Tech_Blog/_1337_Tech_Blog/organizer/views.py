@@ -4,35 +4,26 @@ Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
 
+from _1337_Tech_Blog.NeutrinoKey.decorators import custom_login_required
+from _1337_Tech_Blog.core.utils import UpdateView
+from _1337_Tech_Blog.organizer.models import (ImageFile, MusicFile, MiscFile, Gor_El)
+from _1337_Tech_Blog.superhero.decorators import require_authenticated_permission
 from django.contrib.auth import PermissionDenied
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
-from .models import Tag, Tasking
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import (get_object_or_404, redirect, render)
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import permission_required
-from .forms import TagForm, TaskingForm, UploadFileForm
-from django.views.generic import (ArchiveIndexView, CreateView, FormView, DetailView, ListView, MonthArchiveView, View, YearArchiveView)
-from _1337_Tech_Blog.core.utils import UpdateView
-from _1337_Tech_Blog.NeutrinoKey.decorators import custom_login_required
-from .utils import CreateView
-from _1337_Tech_Blog.superhero.decorators import require_authenticated_permission
-from _1337_Tech_Blog.organizer.models import (ImageFile, MusicFile, MiscFile, Gor_El)
-from _1337_Tech_Blog.core.utils import UpdateView
-from _1337_Tech_Blog.organizer.utils import StartupContextMixin
-
+from django.views.generic import (FormView, ListView, View)
 from django.views.generic.detail import SingleObjectMixin
 
-from _1337_Tech_Blog.NeutrinoKey import cryptoutils
-import glob
-
+from .forms import TagForm, TaskingForm, UploadFileForm
+from .models import Tag, Tasking
+from .utils import CreateView
 
 
 #experimental feature for progress bar
-from celery import task, current_task
-from celery.result import AsyncResult
 # Create your views here.
 def homepage(request):
     return render(request, 'organizer/tag_list.html', {'tag_list': Tag.objects.all()})

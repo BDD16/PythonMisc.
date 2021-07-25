@@ -4,16 +4,13 @@ Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
 
-from django.conf.urls import url
-
-from .views import homepage, tag_detail, tag_list, tag_create, tasking_create, tasking_detail, TagCreate, TaskingCreate, UploadFile, TaskingList, TagList, TaskingUpdate, SuccessView, DownloadImageList, DownloadTheGoodsView #, task_status
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 
-from django.urls import re_path
-from django.views.static import serve
-
+from .views import tag_detail, tasking_detail, TagCreate, TaskingCreate, UploadFile, TaskingList, TagList, \
+    TaskingUpdate, SuccessView, DownloadImageList, DownloadTheGoodsView  # , task_status
 
 urlpatterns = [
     url(r'^$',

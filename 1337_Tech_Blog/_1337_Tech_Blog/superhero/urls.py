@@ -3,16 +3,12 @@ DBA 1337_TECH, AUSTIN TEXAS © MAY 2021
 Proof of Concept code, No liabilities or warranties expressed or implied.
 """
 
-from django.conf.urls import url, include
-from django.contrib import admin
-from django.contrib.auth import urls as auth_urls
+from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
 from django.views.generic import RedirectView
-import _1337_Tech_Blog.settings as settings
+
 # TODO: Create a RegisterCreate View
-from .views import RegisterCreate
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='dj-auth:login', permanent=False)),
