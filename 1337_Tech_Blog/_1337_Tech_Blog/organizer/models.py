@@ -2,6 +2,7 @@
 DBA 1337_TECH, AUSTIN TEXAS © MAY 2020
 Proof of Concept code, No liabilities or warranties expressed or implied.
 '''
+from typing import cast
 
 from django.db import models
 from django.urls import reverse
@@ -24,10 +25,10 @@ import os
 # Create your models here.
 
 # Constants
-musicFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/music/')
-photoFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/photos/')
-videoFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/video/')
-otherFS = FileSystemStorage(location=settings.STATIC_ROOT + '/media/otherfiles/')
+musicFS = FileSystemStorage(location=os.path.join(settings.STATIC_ROOT,'media/music/'))
+photoFS = FileSystemStorage(location=os.path.join(settings.STATIC_ROOT, 'media/photos/'))
+videoFS = FileSystemStorage(location=os.path.join(settings.STATIC_ROOT, 'media/video/'))
+otherFS = FileSystemStorage(location=os.path.join(settings.STATIC_ROOT, 'media/otherfiles/'))
 # End of Constants
 
 '''
@@ -51,8 +52,8 @@ then organizing data at rest.
 
 
 class Librarian(models.Manager):
-    # NMC = NeutronMatterCollector()
-    # NC = NeutronCore()
+    NMC = NeutronMatterCollector()
+    NC = NeutronCore()
     crypt = CryptoTools()
 
     def get_queryset(self):
@@ -198,29 +199,14 @@ class Librarian(models.Manager):
             image_file=file_data,
             # image_file=file_data,
             **kwargs)
-        print(data)
-        data_dek.save()
-        data_kek.save()
         data.image_file.name = filename
         data.result_nonce_file = nonce
-        data.data_dek.set(data_dek)
-        data.data_kek.set(data_kek)
-        if not data.id:
-            super(self.model, self).save(**kwargs)
         data.save()
-        #data.data_kek.add(data_kek)
-        #data.data_dek.add(data_dek)
+        data_dek.save()
+        data_kek.save()
 
-        # print(data.image_file)
-        # print(data.image_file.name)
-        # print("encryptednonce")
-        # print(data.result_nonce_file)
-        # print(b64decode(data.result_nonce_file))
-        # print("encrypted data firstpass")
-        # print(encrypted_data)
-        # data.update(data_dek=data_dek, data_kek=data_kek)
-        print(data)
-        print(dir(data))
+        data.data_kek.set(data_kek.id)
+        data.data_dek.set(data_dek.id)
         print("ENCRYPTED AND SAVED DATA")
         data.save()
         return data

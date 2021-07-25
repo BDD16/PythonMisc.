@@ -5,8 +5,8 @@ import sys, os
 sys.path.insert(0, '../Model')
 sys.path.insert(1, '../Views')
 
-from python.StegonagraphyPython.Controllers import BaseController
-from python.StegonagraphyPython.Model.Clickable import clickable
+from StegonagraphyPython.Controllers import BaseController
+from StegonagraphyPython.Model.Clickable import clickable
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *

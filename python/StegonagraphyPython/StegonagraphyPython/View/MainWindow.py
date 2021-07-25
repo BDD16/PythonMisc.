@@ -8,7 +8,7 @@ sys.path.insert(0, '../Controllers')
 sys.path.insert(1, '../Model')
 sys.path.insert(2, '../Views')
 
-from python.StegonagraphyPython.Views import LandingPage
+from StegonagraphyPython.Views import LandingPage
 
 me = '[MainWindow]'
 

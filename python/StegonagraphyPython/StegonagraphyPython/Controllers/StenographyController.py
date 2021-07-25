@@ -6,12 +6,12 @@ import binascii
 import sys, os
 import traceback
 
-import python.StegonagraphyPython.Model.cryptoutils as crypto_tools
-from python.StegonagraphyPython.Model import HidingAnImage
+import StegonagraphyPython.Model.cryptoutils as crypto_tools
+from StegonagraphyPython.Model import HidingAnImage
 from PyQt5.QtWidgets import QPushButton, QMessageBox
-from python.StegonagraphyPython.Controllers.BaseController import BaseController
-from python.StegonagraphyPython.Model.FileBrowserWindow import FileBrowserWindow
-from python.StegonagraphyPython.Model.PasswordWindow import PasswordWindow
+from StegonagraphyPython.Controllers.BaseController import BaseController
+from StegonagraphyPython.Model.FileBrowserWindow import FileBrowserWindow
+from StegonagraphyPython.Model.PasswordWindow import PasswordWindow
 from PIL import Image
 
 sys.path.insert(0, '../Model')

@@ -1,6 +1,6 @@
 # /usr/env/python3.7
 
-from python.StegonagraphyPython.Views import BaseView
+from StegonagraphyPython.Views import BaseView
 
 me = '[BaseController]'
 

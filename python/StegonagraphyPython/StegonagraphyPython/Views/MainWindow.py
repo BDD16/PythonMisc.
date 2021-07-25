@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QStyle
 
 sys.path.insert(0, '../Controllers')
 sys.path.insert(1, '../Model')
-sys.path.insert(2, '../Views')
+sys.path.insert(2, '')
 
-from python.StegonagraphyPython.Views import LandingPage
+from StegonagraphyPython.Views import LandingPage
 
 me = '[MainWindow]'
 

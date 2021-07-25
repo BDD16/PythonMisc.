@@ -6,12 +6,12 @@ make a view called GameBoard which inherits the BaseView
 
 import sys
 from PyQt5.QtCore import Qt
-from python.StegonagraphyPython.Controllers.StenographyController import StenographyController
-from python.StegonagraphyPython.Model.CustomLabel import *
-from python.StegonagraphyPython.Views.BaseView import BaseView
+from StegonagraphyPython.Controllers.StenographyController import StenographyController
+from StegonagraphyPython.Model.CustomLabel import *
+from StegonagraphyPython.Views.BaseView import BaseView
 sys.path.insert(0, '../Controllers')
 sys.path.insert(1, '../Model')
-sys.path.insert(2, '../Views')
+sys.path.insert(2, '')
 
 me = '[LandingPage]'
 
@@ -53,7 +53,7 @@ class LandingPage(BaseView):
 
         fileItems = QDockWidget("Data to be retrieved", self)
         folderItems = QDockWidget("Image to Be Seen Publicly", self)
-        viewOne = QPixmap(os.getcwd() + '/Views/images/SP_logo.png') # add in "/python/StegonagraphyPython" for cmdline
+        viewOne = QPixmap(os.getcwd() + '/StegonagraphyPython/Views/images/SP_logo.png') # add in "/python/StegonagraphyPython" for cmdline
         print(os.getcwd())
 
         # Adjust the Font
